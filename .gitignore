@@ -1,0 +1,42 @@
+# ── Dependencies ──────────────────────────
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Environment / Secrets ─────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Build Artifacts ───────────────────────
+.next/
+out/
+dist/
+*.egg-info/
+
+# ── Database (local dev) ──────────────────
+*.db
+*.sqlite3
+
+# ── IDE / OS ──────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Docker volumes ────────────────────────
+docker/pgdata/
+
+# ── Misc ──────────────────────────────────
+*.log
+*.tmp
+server_output.txt
+build_output.txt
+build_check.txt
+pip_output.txt

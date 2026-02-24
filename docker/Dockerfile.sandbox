@@ -1,0 +1,18 @@
+# Cofounder Sandbox — Python 3.12 (Debian Slim)
+# Used for ephemeral code execution environments.
+# NEVER use alpine for Python — musl libc breaks C-extension packages.
+
+FROM python:3.12-slim
+
+# System dependencies for common Python packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create workspace directory
+WORKDIR /workspace
+
+# Default: run pytest
+CMD ["python", "-m", "pytest", "-v", "--tb=short"]
