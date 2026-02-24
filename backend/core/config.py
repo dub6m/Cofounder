@@ -44,5 +44,15 @@ class Settings(BaseSettings):
     siliconflow_backoff_base: float = 1.0
     siliconflow_backoff_max: float = 60.0
 
+    # ── Docker Sandbox ─────────────────────────────────────────
+    sandbox_image: str = "cofounder-sandbox:latest"
+    sandbox_timeout: int = 120  # seconds before container is killed
+    sandbox_workspace: str = "/workspace"
+
+    # ── Aider ──────────────────────────────────────────────────
+    aider_model: str = "Qwen/Qwen2.5-Coder-7B-Instruct"
+    aider_architecture_file: str = "TARGET_ARCHITECTURE.md"
+    aider_prompt_caching: bool = True
+
 
 settings = Settings()
