@@ -21,7 +21,7 @@ from core.config import settings
 from core.database import getSession, initDb
 from core.models import Conversation
 from schemas.ws_events import EventType
-from services.orchestrator.pipeline import handleUserMessage, handleDecisionResponse
+from services.orchestrator.pipeline import handleUserMessage
 
 # ── Logging ────────────────────────────────────────────────────
 
@@ -159,33 +159,6 @@ async def websocketEndpoint(websocket: WebSocket):
                             clientId=clientId,
                         )
 
-            # ── Handle decision_response ───────────────────
-            elif eventType == "decision_response":
-                conversationId = payload.get("conversation_id")
-                decisionId = payload.get("decision_id", "")
-                selectedValue = payload.get("selected_value", "")
-
-                if not conversationId:
-                    continue
-
-                async for session in getSession():
-                    try:
-                        await handleDecisionResponse(
-                            session,
-                            conversationId,
-                            decisionId,
-                            selectedValue,
-                            clientId,
-                        )
-                    except Exception as e:
-                        logger.error(
-                            f"Error handling decision: {e}", exc_info=True
-                        )
-                        await manager.sendEvent(
-                            EventType.ERROR,
-                            {"message": f"Decision error: {str(e)}"},
-                            clientId=clientId,
-                        )
 
     except WebSocketDisconnect:
         manager.disconnect(clientId)

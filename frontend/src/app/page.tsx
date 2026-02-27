@@ -5,7 +5,7 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 import ChatPane from "@/components/dashboard/ChatPane";
 import CanvasPane from "@/components/dashboard/CanvasPane";
 import RealityPane from "@/components/dashboard/RealityPane";
-import type { ChatMessage, Decision } from "@/types/chat";
+import type { ChatMessage } from "@/types/chat";
 import type { DiagramType } from "@/types/architecture";
 import type { ExecutionStep, TestResult } from "@/types/execution";
 import type { EventType } from "@/lib/wsEvents";
@@ -41,12 +41,6 @@ export default function DashboardPage() {
           };
           setMessages((prev) => [...prev, msg]);
           setIsLoading(false);
-          break;
-        }
-
-        case "decision_required": {
-          // Decisions are embedded in chat_message metadata
-          // This event can be used for additional UI triggers
           break;
         }
 
@@ -151,18 +145,6 @@ export default function DashboardPage() {
     [sendEvent, conversationId],
   );
 
-  const handleDecisionSelect = useCallback(
-    (decisionId: string, selectedValue: string) => {
-      setIsLoading(true);
-      sendEvent("decision_response", {
-        conversation_id: conversationId,
-        decision_id: decisionId,
-        selected_value: selectedValue,
-      });
-    },
-    [sendEvent, conversationId],
-  );
-
   // ── Render ─────────────────────────────────────────────────
   return (
     <div className="h-screen flex flex-col bg-[var(--bg-primary)]">
@@ -198,7 +180,6 @@ export default function DashboardPage() {
           <ChatPane
             messages={messages}
             onSendMessage={handleSendMessage}
-            onDecisionSelect={handleDecisionSelect}
             isConnected={isConnected}
             isLoading={isLoading}
           />

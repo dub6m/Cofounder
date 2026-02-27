@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { MessageSquare, Wifi, WifiOff } from "lucide-react";
 import MessageBubble from "@/components/chat/MessageBubble";
-import DecisionCard from "@/components/chat/DecisionCard";
 import ChatInput from "@/components/chat/ChatInput";
-import type { ChatMessage, Decision } from "@/types/chat";
+import type { ChatMessage } from "@/types/chat";
 
 interface ChatPaneProps {
   messages: ChatMessage[];
   onSendMessage: (content: string) => void;
-  onDecisionSelect: (decisionId: string, selectedValue: string) => void;
   isConnected: boolean;
   isLoading: boolean;
 }
@@ -18,13 +16,10 @@ interface ChatPaneProps {
 export default function ChatPane({
   messages,
   onSendMessage,
-  onDecisionSelect,
   isConnected,
   isLoading,
 }: ChatPaneProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  // Map of decisionId -> selectedValue (preserves which option was chosen)
-  const [decisions, setDecisions] = useState<Map<string, string>>(new Map());
 
   // Smooth-scroll to bottom on new messages
   useEffect(() => {
@@ -38,7 +33,6 @@ export default function ChatPane({
 
   // Re-adjust scroll when a DeepDive tangent is collapsed/expanded
   const handleDeepDiveToggle = useCallback(() => {
-    // Small delay to let the CSS transition start measuring
     setTimeout(() => {
       if (scrollRef.current) {
         scrollRef.current.scrollTo({
@@ -48,15 +42,6 @@ export default function ChatPane({
       }
     }, 350);
   }, []);
-
-  const handleDecision = (decisionId: string, selectedValue: string) => {
-    setDecisions((prev) => {
-      const next = new Map(prev);
-      next.set(decisionId, selectedValue);
-      return next;
-    });
-    onDecisionSelect(decisionId, selectedValue);
-  };
 
   return (
     <div className="flex flex-col h-full">
@@ -71,7 +56,7 @@ export default function ChatPane({
               Cofounder
             </h2>
             <p className="text-[11px] text-[var(--text-muted)]">
-              Your Thought Partner
+              Your Technical Lead
             </p>
           </div>
         </div>
@@ -114,24 +99,11 @@ export default function ChatPane({
         )}
 
         {messages.map((msg) => (
-          <React.Fragment key={msg.id}>
-            <MessageBubble
-              message={msg}
-              onDeepDiveToggle={handleDeepDiveToggle}
-            />
-
-            {/* Render Decision Cards inline after the assistant message */}
-            {msg.role === "assistant" &&
-              msg.metadata?.decisions?.map((decision: Decision) => (
-                <div key={decision.id} className="ml-11">
-                  <DecisionCard
-                    decision={decision}
-                    onSelect={handleDecision}
-                    selectedValue={decisions.get(decision.id) ?? null}
-                  />
-                </div>
-              ))}
-          </React.Fragment>
+          <MessageBubble
+            key={msg.id}
+            message={msg}
+            onDeepDiveToggle={handleDeepDiveToggle}
+          />
         ))}
 
         {/* Typing indicator */}
